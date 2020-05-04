@@ -1,0 +1,71 @@
+
+/*提交&注册*/
+.froms{z-index: 1000;position: relative;top: 15%;width: 90%;margin: 0 auto 23px}
+.van-cell,.van-cell-group{background-color: transparent!important;border-bottom: 1px solid #d6d6d6}
+.van-button--info{background-color: rgba(112, 60, 24,0.4);border:rgba(112, 60, 24,0.4);}
+/*倒计时*/
+.time{font-size: 13px;width: 30%;position: absolute;top:57px;right: 0}
+.canClick{color: #8b8b8b}
+/*向下*/
+.i-from{margin-top: 47px}
+
+
+/*nine*/
+.nine{background-color: white;margin-top: 19px}
+.van-grid-item__text{font-size: 14px}
+
+/*ico*/
+.van-nav-bar .van-icon{color: black;font-size: 20px}
+
+/*字体模板*/
+.one-img {height: 75px;}
+.one-img{display: flex;margin-top: 38px}
+.one-img>.customer{flex: 3;display: flex;padding-left: 16px}
+.one-img>.customer p{position: relative;top: 30px;color: gray}
+.one-img>.mui-img{flex: 1;position: relative;top: 44px;right: 20px;}
+.one-img h2{font-size: 30px;}
+/* 日期选择图标消失,日期左对齐 */
+.el-input__icon{display: none;}
+.el-input--prefix .el-input__inner{padding-left: 15px;}
+/*from*/
+.form-btn{text-align: center;padding: 10px;}
+#btn{width: 55%;line-height: 34px;border-radius: 4px;border: none;background-color: black;color: white}
+/*加载*/
+.van-loading{text-align: center;top: 29%}
+/* 单选框大小 */
+.van-radio__icon,.van-checkbox__icon{font-size: 16px;}
+/*table*/
+.all{display: flex;margin-bottom: 12px;margin-left: 15px;font-size: 17px}
+.sc{font-weight: 600;width: 9%;padding-top: 3px}
+.saving{width: 20%}
+.saving,.all-money{font-weight: bold}
+.tables,.table-xin{width:100%;font-size: 14px;text-align: left;white-space: nowrap;margin-bottom: 75px}
+.tables tr th,.table-xin tr th{background-color: #dadada;line-height: 27px;}
+.tables tr th:nth-child(1),.table-xin tr th:nth-child(1){width: 12%;min-width: 40px}
+.tables tr th:nth-child(2),table tr th:nth-child(3){min-width: 55px;width: 22%}
+.table-xin tr th:nth-child(2),.table-xin tr th:nth-child(3){min-width: 55px;width: 22%}
+.tables tr th:nth-child(4){min-width: 30px;width: 45%;}
+.tables tr td:nth-child(1) span,.table-xin tr td:nth-child(1) span{display: block;overflow: hidden;width: 20px;text-overflow: ellipsis;margin-left: 15px;line-height: 13px}
+.tables tr td:nth-child(1) span img,.table-xin tr td:nth-child(1) span img{width: 100%}
+.tables tr,.table-xin tr{line-height: 30px;}
+td{border-bottom: 1px solid #ccc;}
+/*ul li*/
+.bckShow{background-color: white;position: absolute;z-index: 1000;right: 0;left: 0;height: 300px;overflow: auto;}
+.bckShow>li{padding: 8px 18px;border-bottom: 1px solid #d6d6d6}
+
+/*收入支出单选按钮*/
+.che{display: flex;margin-top: 10px}
+.che label{width: 100px}
+
+
+/*弹窗宽百分百*/
+.van-popup--center{width: 100%}
+
+/*时间样式*/
+.data_time{display: flex;}
+.data_time label{width: 90px;display: block;padding: 10px 16px;box-sizing: border-box;font-size: 14px}
+.el-input__inner{background-color: transparent;border: none}
+
+
+.garyList{color: gray}
+.blackList{color: black}
