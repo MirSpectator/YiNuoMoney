@@ -100,12 +100,13 @@
         }
         this.company_id = id;
         this.$moneyGet('bank/select_Bank.po?company_id='+id).then(res=>{
+          this.$store.commit('all_bank',JSON.stringify(res.data.data));
           let data = res.data.data;
           let xin = 0,chu=0,allMoney=0;  //信用卡,储蓄卡
           for (var index in data){
             if (data[index].bank_stale == '储蓄卡'){
               this.debit_card.push(data[index]);
-              chu+=data[index].balance
+              chu+=data[index].balance;
             }else if (data[index].bank_stale == '信用卡'){
               this.credit_card.push(data[index]);
               xin+=data[index].balance;

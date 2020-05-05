@@ -24,7 +24,6 @@
         </div>
         <div class="btn">
             <van-button type="primary" color="black" @click="deletes">删除</van-button>
-            <van-button type="primary" color="black" @click="refund">退款</van-button>
             <van-button type="primary" color="black" @click="updates">修改</van-button>
         </div>
     </div>
@@ -42,15 +41,10 @@
       }
     },
     methods:{
-      transfer(){
-        // this.listJson = JSON.parse(this.$route.params.id);
-      },
       //删除
       deletes(){
         this.$emit('deletes','transfer_running_money_details',this.listJson[0]);
       },
-      //退款
-      refund(){},
       //修改
       updates(){
 

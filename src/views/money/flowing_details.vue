@@ -58,7 +58,9 @@
         this.$emit('deletes','flowing_details',this.listJson);
       },
       //退款
-      refund(){},
+      refund(){
+        this.$router.push(`/home/running_money/flowing_details/refund/${JSON.stringify(this.listJson)}`);
+      },
       //修改
       updates(){
         this.$router.push(`/home/running_money/flowing_details/runing_details_updata/${JSON.stringify(this.listJson)}`);

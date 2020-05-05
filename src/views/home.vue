@@ -18,7 +18,7 @@
     <div class="one-noble">
         <div class="one">
             <h2>一诺装饰</h2>
-            <p>版本号：0.4.2</p>
+            <p>版本号：0.4.4</p>
         </div>
         <p class="left-p">Enterprise Resource Planning</p>
     </div>
@@ -29,6 +29,8 @@
         </van-grid>
     </div>
     </van-pull-refresh>
+<!--    第一次进入首页需要加载一次银行卡所有数据并且保存到vuex，刚进入首页直接进入现金流水，以免没有筛选数据-->
+    <all_bank v-show="false"></all_bank>
 </div>
 </template>
 

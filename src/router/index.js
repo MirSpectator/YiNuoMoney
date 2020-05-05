@@ -27,7 +27,7 @@ const routes = [
   {path:'/home/class_vue/projet_name', name:'projet_name', component: resolve=>require(['@/views/class_ification/projet_name'],resolve)},
   {path:'/home/class_vue/projet_name/projet_name_update/:id', name:'projet_name_update', component: resolve=>require(['@/views/class_ification/projet_name_update'],resolve)},
   {path:'/home/receivable_money/account_translation/:id', name:'account_translation', component: resolve=>require(['@/views/receivable/account_translation'],resolve)},
-  {path:'/fee', name:'fee', component: resolve=>require(['@/components/fee'],resolve)},
+  {path:'/home/running_money/flowing_details/refund/:id', name:'refund', component: resolve=>require(['@/views/money/refund'],resolve)},
 ]
 
 const router = new VueRouter({

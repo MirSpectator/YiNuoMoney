@@ -23,38 +23,39 @@
             <van-field v-model="SearchValue" :border="true" size="100" label="输入关键字" placeholder="请输入关键字"/>
             <van-collapse v-model="activeNames">
                 <van-collapse-item title="查询" name="1">
-                    <van-field readonly clickable name="picker" :value="bank_person" label="户主" placeholder="点击选择户主" @click="bank_personPicker = true"/>
-                    <van-popup v-model="bank_personPicker" position="bottom">
-                        <van-picker show-toolbar :columns="bank_personcolumns" @confirm="bank_personConfirm" @cancel="bank_personPicker = false"/>
-                    </van-popup>
-                    <van-field readonly clickable name="picker" :value="bank_bank" label="开户行" placeholder="点击选择开户行" @click="bank_bankPicker = true"/>
-                    <van-popup v-model="bank_bankPicker" position="bottom">
-                        <van-picker show-toolbar :columns="bank_bankcolumns" @confirm="bank_bankConfirm" @cancel="bank_bankPicker = false"/>
-                    </van-popup>
-                    <van-field readonly clickable name="picker" :value="bank_number" label="尾号" placeholder="点击选择尾号" @click="bank_numberPicker = true"/>
-                    <van-popup v-model="bank_numberPicker" position="bottom">
-                        <van-picker show-toolbar :columns="bank_numbercolumns" @confirm="bank_numberConfirm" @cancel="bank_numberPicker = false"/>
-                    </van-popup>
-                    <van-field readonly clickable name="picker" :value="dateStart" label="起始时间" placeholder="点击选择起始时间" @click="dateStartPicker = true"/>
-                    <van-popup v-model="dateStartPicker" position="bottom">
-                        <van-picker show-toolbar :columns="dateStartcolumns" @confirm="dateStartConfirm" @cancel="dateStartPicker = false"/>
-                    </van-popup>
-                    <van-field readonly clickable name="picker" :value="dateEnter" label="结束时间" placeholder="点击选择结束时间" @click="dateEnterPicker = true"/>
-                    <van-popup v-model="dateEnterPicker" position="bottom">
-                        <van-picker show-toolbar :columns="dateEntercolumns" @confirm="dateEnterConfirm" @cancel="dateEnterPicker = false"/>
-                    </van-popup>
-                    <van-field readonly clickable name="picker" :value="fund_nameo" label="类别选择" placeholder="点击选择类别选择" @click="fund_nameoPicker = true"/>
-                    <van-popup v-model="fund_nameoPicker" position="bottom">
-                        <van-picker show-toolbar :columns="fund_nameocolumns" @confirm="fund_nameoConfirm" @cancel="fund_nameoPicker = false"/>
-                    </van-popup>
-                    <van-field readonly clickable name="picker" :value="list_fund_namea" label="类别名称" placeholder="点击选择类别名称" @click="list_fund_nameaPicker = true"/>
-                    <van-popup v-model="list_fund_nameaPicker" position="bottom">
-                        <van-picker show-toolbar :columns="list_fund_nameacolumns" @confirm="list_fund_nameaConfirm" @cancel="list_fund_nameaPicker = false"/>
-                    </van-popup>
-                    <van-field readonly clickable name="picker" :value="customer_name" label="工地名称" placeholder="点击选择工地名称" @click="customer_namePicker = true"/>
-                    <van-popup v-model="customer_namePicker" position="bottom">
-                        <van-picker show-toolbar :columns="customer_namecolumns" @confirm="customer_nameConfirm" @cancel="customer_namePicker = false"/>
-                    </van-popup>
+<!--                    起始时间、结束时间、类别选择、类别名称、工地名称-->
+                    <site_people labe="工地名称" @site_peoples="siteId" v-model="site" place="请输入工地名称"></site_people>
+                    <people peopleLabel="相关人" @peopleList="peopleID" v-model="listRelevant" placePeople="请输入相关人"></people>
+                    <div class="select_option">
+                        <label>户主</label>
+                        <select v-model="bank_person" @change="search_person_api(bank_person)" :class="{garyList:bank_person === '',blackList:bank_person!==''}">
+                            <option value="">请选择</option>
+                            <option v-for="(item,i) in fund_person" :key="i" :value="item.bank_person">{{item.bank_person}}</option>
+                        </select>
+                    </div>
+                    <div class="select_option">
+                        <label>开户行</label>
+                        <select v-model="bank_name" @change="search_bankName_api(bank_name)" :class="{garyList:bank_name === '',blackList:bank_name!==''}">
+                            <option value="">请选择</option>
+                            <option v-for="(item,i) in fund_person" :key="i" :value="item.bank_name">{{item.bank_name}}</option>
+                        </select>
+                    </div>
+                    <div class="select_option">
+                        <label>起始时间</label>
+                        <el-date-picker v-model="startDate" @change="search_starDate_api" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择日期时间"></el-date-picker>
+                    </div>
+                    <div class="select_option">
+                        <label>结束时间</label>
+                        <el-date-picker v-model="endDate" @change="search_endDate_api" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择日期时间"></el-date-picker>
+                    </div>
+                    <div class="select_option">
+                        <label>类别选择</label>
+                        <div>暂无</div>
+                    </div>
+                    <div class="select_option">
+                        <label>类别名称</label>
+                        <div>暂无</div>
+                    </div>
                 </van-collapse-item>
             </van-collapse>
         </div>
@@ -106,32 +107,23 @@
       'transfer_running_money_details':transfer_running_money_details
     },
     data(){
-      return{
-        title:'现金流水',
-        SearchValue:'',//关键字搜索
-        activeNames:[],//下拉显示
-        columns: ['杭州', '宁波', '温州', '嘉兴', '湖州'],//下拉选择
-        showPicker: false,//是否显示
+      return {
+        title: '现金流水',
+        SearchValue: '',//关键字搜索
+        activeNames: [],//下拉显示
+        fund_person: '',//户主筛选数据
+        site:'',//工地名称
+        listRelevant:'',//相关人
         bank_person:'',//户主
-        bank_person_id:'',//户主id
-        bank_personcolumns:[],//户主下拉列表
-        bank_bank:'',//开户行
-        bank_bank_id:'',//开户行id
-        bank_bankcolumns:[],//开户行列表
-        bank_number:'',//尾号
-        bank_numbercolumns:[],//尾号列表
-        dateStart:'',//开始时间
-        dateStartcolumns:[],//开始时间列表
-        dateEnter:'',//结束时间
-        dateEntercolumns:[],//结束时间列表
-        fund_nameo:'',//类别选择
-        fund_nameocolumns:[],//类别选择列表
-        list_fund_namea:'',//类别名称
-        list_fund_id:'',//类别id
-        list_fund_nameacolumns:[],//类别名称列表
-        customer_name:'',//工地名称
-        customer_name_id:'',//工地名称id
-        customer_namecolumns:[],//工地名称列表
+        bank_name:'',//开户行
+        startDate:'',//起始时间
+        endDate:'',//结束时间
+        //这里json是传入jsonBank里面的
+        list_search_data: {},//筛选id
+        //这个里面是传入jsonFund里面的
+        list_search_jsonfund:{
+          company_id:this.$store.state.company_id
+        },
         green_money:0,//绿色金额
         red_money:0,//红色金额
         all_money:0,//所有金额
@@ -139,21 +131,12 @@
         show:false,
         show_money:false,
         //弹窗
-        bank_personPicker:false,//户主弹窗
-        bank_bankPicker:false,//开户行弹窗
-        bank_numberPicker:false,//尾号
-        dateStartPicker:false,//开始时间
-        dateEnterPicker:false,//结束时间
-        fund_nameoPicker:false,//类别选择
-        list_fund_nameaPicker:false,//类别名称
-        customer_namePicker:false,//工地名称
-        flowing:false,//账单详情
-        flowing_money:false,//账单详情
         List_search:[],//现金流水数据
         loadding:false,//加载
         List_search_edit:'',//渲染弹出的数据
         fund:'',//利息
         moneyss:'',//利息余额
+        tur:true,
         //流水详情
         list_data_details:'',//获取详情这条信息
         //样式
@@ -178,53 +161,62 @@
       this.getData();
     },
     methods:{
+      //工地名称
+      siteId(datas,id){
+        this.site = datas;
+        this.list_search_jsonfund['customer_id'] = id;
+        let data = this.list_search_data;
+        let jso = this.list_search_jsonfund;
+        let json = {jsonBank:JSON.stringify(data),jsonFund:JSON.stringify(jso)}
+        this.search_api(json);
+      },
+      //相关人
+      peopleID(datas,id){
+        this.listRelevant = datas;
+        this.list_search_jsonfund['fund_person_id'] = id;
+        let data = this.list_search_data;
+        let jso = this.list_search_jsonfund;
+        let json = {jsonBank:JSON.stringify(data),jsonFund:JSON.stringify(jso)}
+        this.search_api(json);
+      },
       //户主
-      bank_personConfirm(value){
-        this.bank_person = value;
-        this.bank_person_id = value;
-        this.bank_personPicker = false;
+      search_person_api(val){
+        this.list_search_data['bank_person'] = val;
+        let data = this.list_search_data;
+        let jso = this.list_search_jsonfund;
+        let json = {jsonBank:JSON.stringify(data),jsonFund:JSON.stringify(jso)}
+        this.search_api(json);
       },
       //开户行
-      bank_bankConfirm(value){
-        this.bank_bank = value;
-        this.bank_bank_id = value;
-        this.bank_bankPicker = false;
+      search_bankName_api(val){
+        this.list_search_data['bank_name'] = val;
+        let data = this.list_search_data;
+        let jso = this.list_search_jsonfund;
+        let json = {jsonBank:JSON.stringify(data),jsonFund:JSON.stringify(jso)}
+        this.search_api(json);
       },
-      //尾号
-      bank_numberConfirm(value){
-        this.bank_number = value;
-        this.bank_numberPicker = false;
-      },
-      //开始时间
-      dateStartConfirm(value){
-        this.dateStart = value;
-        this.dateStartPicker = false;
+      //起始时间
+      search_starDate_api(val){
+        this.list_search_jsonfund['startDate'] = val;
+        let data = this.list_search_data;
+        let jso = this.list_search_jsonfund;
+        let json = {jsonBank:JSON.stringify(data),jsonFund:JSON.stringify(jso)}
+        this.search_api(json);
       },
       //结束时间
-      dateEnterConfirm(value){
-        this.dateEnter = value;
-        this.dateEnterPicker = false;
+      search_endDate_api(val){
+        this.list_search_jsonfund['endDate'] = val;
+        let data = this.list_search_data;
+        let jso = this.list_search_jsonfund;
+        let json = {jsonBank:JSON.stringify(data),jsonFund:JSON.stringify(jso)}
+        this.search_api(json);
       },
-      //类别选择
-      fund_nameoConfirm(value){
-        this.fund_nameo = value;
-        this.fund_nameoPicker = false;
-      },
-      //类别名称
-      list_fund_nameaConfirm(value){
-        this.list_fund_namea = value;
-        this.list_fund_id = value;
-        this.list_fund_nameaPicker = false;
-      },
-      //工地名称
-      customer_nameConfirm(value){
-        this.customer_name = value;
-        this.customer_id = value;
-        this.customer_namePicker = false;
-      },
-      onConfirm(value) {
-        this.bank_person = value;
-        this.showPicker = false;
+      //封装筛选
+      search_api(jsonbank){
+        this.$addtitle('fund/select_Money.po',jsonbank).then(res=>{
+          this.List_search = res.data.data;
+          this.all_amounts(this.List_search);
+        })
       },
       //去掉-号
       negative(value){
@@ -276,16 +268,37 @@
         let windowHeight = e.srcElement.clientHeight;
         let scrollHeight = e.srcElement.scrollHeight - 2;
         if (scrollTop+windowHeight >= scrollHeight) {
-          var time = this.GetDateStr();
-          if (time === this.sh_data) {
-            var date = this.time(this.sh_data)
-            this.fund_data(date)
-          } else {
-            var enddate = this.time(this.sh_data);
-            var startdate = this.time(this.sh_data);
-            this.fund_data(startdate, enddate)
-          }
+          var time = this.GetDateStr(0);
+            if (time === this.sh_data) {
+              var date = this.time(this.sh_data)
+              this.fund_data(date)
+            } else {
+              var enddate = this.time(this.sh_data);
+              var startdate = this.time(this.sh_data);
+              this.fund_data(startdate, enddate)
+            }
         }
+        //这里是阻止多次运行的
+       /* if (!this.tur) return
+        let scrollTop = e.srcElement.scrollTop;
+        let windowHeight = e.srcElement.clientHeight;
+        let scrollHeight = e.srcElement.scrollHeight - 2;
+        if (scrollTop+windowHeight >= scrollHeight) {
+          var time = this.GetDateStr(0);
+          if (this.tur){
+            this.tur = false
+            if (time === this.sh_data) {
+              var date = this.time(this.sh_data)
+              this.fund_data(date)
+            } else {
+              var enddate = this.time(this.sh_data);
+              var startdate = this.time(this.sh_data);
+              this.fund_data(startdate, enddate)
+            }
+          }else{
+            this.tur = true;
+          }
+        }*/
       },
       //调用流水滑动
       fund_data(startdate,enddate){
@@ -295,7 +308,7 @@
           data['endDate'] = enddate;
         }
         let datas = {jsonBank:JSON.stringify({}),jsonFund:JSON.stringify(data)};
-        this.$addtitle('fund/select_Money.po',datas).then(res=>{
+         this.$addtitle('fund/select_Money.po',datas).then(res=>{
           if(res.data.data === '暂无数据'){
             this.$toast.success(res.data.data);
             this.loadding = false
@@ -405,14 +418,18 @@
         var y = dd.getFullYear()
         var m = (dd.getMonth() + 1) < 10 ? '0' + (dd.getMonth() + 1) : (dd.getMonth() + 1)// 获取当前月份的日期，不足10补0
         var d = dd.getDate() < 10 ? '0' + dd.getDate() : dd.getDate()// 获取当前几号，不足10补0
-        return y + '-' + m + '-' + d;
+        var h = dd.getHours() < 10 ? '0' + dd.getHours() : dd.getHours();
+        var mm = dd.getMinutes() < 10 ? '0' + dd.getMinutes() : dd.getMinutes();
+        var s = dd.getSeconds() < 10 ? '0' + dd.getSeconds() : dd.getSeconds();
+        // return y + '-' + m + '-' + d;
+        return `${y}-${m}-${d} ${h}:${mm}:${s}`;
       },
       //流水数据
       getData(){
         //银行卡查询数据是否有数据
         let data = sessionStorage.getItem("all_bank_card");
         this.sh_data = this.GetDateStr(-2);
-        let jso = {company_id:this.$store.state.company_id,startDate:this.GetDateStr(-3)}
+        let jso = {company_id:this.$store.state.company_id,startDate:this.GetDateStr(-30)}
         let jsonB = {}
         let json = {jsonBank:JSON.stringify(jsonB),jsonFund:JSON.stringify(jso)}
         if (data == undefined || data == null){
@@ -494,13 +511,19 @@
           }
         })
         return newList
+      },
+      //获取银行卡数据
+      all_bank(){
+        let data = JSON.parse(this.$store.state.all_bank_pd);
+        this.fund_person = data;
       }
     },
   }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 @import "../../assets/css/public.css";
+@import "../../assets/css/vue_style";
 *{font-size: 15px}
 .download{margin-bottom: 13px;margin-top: 19px;margin-left: 6%}
 .download span:nth-child(1){color:#409eff}
@@ -546,4 +569,9 @@ footer div,footer em{flex: 1;font-style: normal}
     width: 50%;
 }
 .van-popup--center{width: 92%;height: 629px;overflow: auto}
+    .select_option label{padding-left: 7px}
+    .select_option{line-height: 32px}
+/deep/.el-input--prefix .el-input__inner{padding: 0;height: 32px}
+    .search .site_people /deep/.van-cell,.search .people /deep/.van-cell{padding: 6px 0;}
+    /deep/.van-field__label{width: 75px}
 </style>

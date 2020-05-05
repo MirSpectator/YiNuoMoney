@@ -18,6 +18,7 @@ export default new Vuex.Store({
     index_count:0,//计算转账
     user_id:'',//注册id
     company_id:sessionStorage.getItem('id') || '',
+    all_bank_pd:sessionStorage.getItem('all_bank_person') || '',//银行卡所有数据
   },
   mutations: {
     //all_bank模块所有金额
@@ -52,7 +53,11 @@ export default new Vuex.Store({
       state.company_id = val;
       sessionStorage.setItem('id',val);
     },
-
+    //银行卡所有数据
+    all_bank(state,val){
+      state.all_bank = val;
+      sessionStorage.setItem('all_bank_person',val);
+    }
   },
   getters:{
     company_id(state){
