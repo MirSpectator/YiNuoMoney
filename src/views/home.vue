@@ -49,7 +49,6 @@
           { href: '/home/category_class', listImg: require('../assets/images/fen.png'), text: '分类调整' },
           { href: '/home/class_vue', listImg: require('../assets/images/fl.png'), text: '分类' },
           { href: '/home/receivable_money', listImg: require('../assets/images/caiwu.png'), text: '应收应付' },
-
         ],
         isLoading: false,
       }
