@@ -55,6 +55,7 @@
         money_bank_person:'',//转出账户
         money_get:'',//实际转账如果修改就传这个
         ceew:{},//应收付款是否显示
+		fund_detail_id:null,//销账需要使用的
       }
     },
     created() {
@@ -66,6 +67,9 @@
       //应收款项
       onConfirm(val){
         console.log(val)
+		this.reicePicker=false
+		this.reice = val.text
+		this.fund_detail_id = val.fund_detail_id
       },
       //下拉框获取最后的id
       fund_monitor(val){
@@ -111,9 +115,12 @@
         let list = {customer_id:this.site_id,fund_person_id:this.listRelevant_id,fund_name_id:this.fund_detail_id,fund_money:Number(this.money),fund_text:this.clearBei,
           fund_detail_text:this.clearBei,fund_detail_transaction_text:this.clearBei,fund_detail_money:Number(this.money),fund_detail_transaction_money:Number(this.money),
           fund_detail_transaction_bank_id:this.money_bank_id,fund_date:this.dateTime,fund_detail_date:this.dateTime,fund_detail_transaction_date:this.dateTime,
-          company_id:this.$store.getters.company_id,sj_money:this.money_get}
-        var listJs = JSON.stringify(list);
-        var liss = {jsonFund:listJs}
+          company_id:this.$store.getters.company_id,sj_money:this.money_get};
+		  //判断是否需要销账
+		if(this.fund_detail_id !=null ){
+			list['fund_detail_id'] = this.fund_detail_id
+		}
+        var liss = {jsonFund:JSON.stringify(list)};
         this.$addtitle('fund/out_Enter.po',liss).then(res=>{
           if (res.status === 200){
             this.loadding = false;
@@ -126,7 +133,7 @@
           }
         }).catch(err=>{
           this.$toast.fail('数据异常');
-        })
+        }) 
       },
       //工地名称
       siteId(data,id){
@@ -146,8 +153,19 @@
       },
       //应收款项
       fund_ciew(val){
-        this.$addtitle('fund/select_beforehand_fund.po',val).then(res=>{
-          console.log(res)
+		  let data  = {"jsonfund_detail":val}
+        this.$addtitle('fund/select_beforehand_fund.po',data).then(res=>{
+		  if(res.status===200&&res.data.data!='暂无数据'){
+			  let list = [];
+			  res.data.data.forEach((item)=>{
+				  if(item.fund_detail_money>0){
+					  item['text']='￥'+item.fund_detail_money+"  |  "+item.fund_detail_date+"   |   "+item.fund_detail_text
+					  list.push(item)
+				  }
+			  })
+		  this.reicecolumns = list
+		  this.reiceShow = true
+		  }
         })
       },
       //银行卡获取

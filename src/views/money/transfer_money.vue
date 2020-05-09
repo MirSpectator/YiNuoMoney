@@ -1,5 +1,5 @@
 <template>
-    <div class="transfer_money">
+    <div class="transfer_money"> 
         <header_header title="现金录入"></header_header>
         <title_header :title_header="title" :title_header_one="title_header" :title_header_show="true" :all-money="money"></title_header>
         <van-field name="radio" label="现金录入">

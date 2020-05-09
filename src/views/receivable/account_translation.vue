@@ -36,15 +36,13 @@
             </van-field>
         </van-cell-group>
         <div class="btn" v-show="btn_zeng">
-            <van-button type="primary" color="black" @click="deletes">删除</van-button>
-            <van-button type="primary" color="black" @click="refund">退款</van-button>
-            <van-button type="primary" color="black" @click="updates">修改</van-button>
+           <van-button type="primary" color="black" @click="updates">修改</van-button>
+			<van-button type="primary" color="black" @click="deletes">删除</van-button>
         </div>
         <div class="btn two" v-show="btn_f">
             <van-button type="primary" color="black" @click="updates">修改</van-button>
             <van-button type="primary" color="black" @click="deletes">删除</van-button>
-            <van-button type="primary" color="black" @click="expenditure">支出</van-button>
-            <van-button type="primary" color="black" @click="deal_with">处理</van-button>
+      
         </div>
     </div>
 </template>
@@ -150,14 +148,8 @@
           this.loading = false;
         })
       },
-    //  支出
-      expenditure(){
-
-      },
-    //  处理
-      deal_with(){
-
-      },
+   
+   
     },
   }
 </script>

@@ -36,7 +36,9 @@ Vue.prototype.$addtitle = add;
 Vue.prototype.$moneyGet = moneyGet;
 Vue.prototype.$time = time;
 const ser = Vue.prototype.axios = axios.create({
+  //真实地址
   baseURL:'https://formattingclub.com/YiNuoFund/',
+  //baseURL:'http://localhost:8080/YiNuoFund/',
   timeout:20000,
   withCredentials:true,
 })

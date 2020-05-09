@@ -1,6 +1,6 @@
 <template>
     <div class="site_people">
-        <van-field :label="labe" v-model="site" :placeholder="place" @keyup="siteKeyuo(site)"/>
+        <van-field :label="labe" v-model="site" :placeholder="place" @keyup="siteKeyuo(site)"  @input="myChange"/>
         <ul class="bckShow" v-show="listShow">
             <li v-for="(item,i) in list_columns" :key="i" @click="onClick(item.customer_name,item.customer_id)">{{item.customer_name}}</li>
         </ul>
@@ -25,6 +25,14 @@
       }
     },
     methods:{
+		//监听输入框的变化
+	  myChange(){
+		  if(this.site===""){
+			  this.$emit('change',this.site)
+		  }else {
+			  this.$emit('change',this.site,this.site_id)
+		  }
+	  }	,
       siteKeyuo(val){
         let then = this;
         if (val.length == ''){
@@ -46,7 +54,8 @@
         this.site = value;
         this.site_id = id;
         this.$emit('site_peoples',value,this.site_id);
-        this.listShow = false;
+        this.$emit('change',this.site,id)
+		this.listShow = false;
       },
       siteName(){
         let data = this.$store.state.company_id;

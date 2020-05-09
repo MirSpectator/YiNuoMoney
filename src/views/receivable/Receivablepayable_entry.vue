@@ -4,7 +4,7 @@
         <toast_loading :show="loadding"></toast_loading>
          <title_header title_header="应收应付录入" title_header_one="Receivablepayableentry"></title_header>
 
-        <!--table-->
+        <!--table--> 
          <div class="btn">
              <van-field name="radio" label="类型">
                  <template #input>
@@ -129,7 +129,7 @@
           fund_detail_type:'',//情况
           fund_money:'',//金额
           fund_type:'阶段付款',//阶段付款
-          company_id:0
+          company_id:null
         },
         handle:{//应付格式
           customer_id :'',   //工地id
@@ -139,7 +139,7 @@
           fund_money:'',//金额
           fund_detail_level:'',//级别
           fund_detail_type:'',//情况
-          company_id:0
+          company_id:null
         },
         list_level:[{text:'A'}, {text:'B '}, {text:'C '},],
         list_happening:[
@@ -176,6 +176,7 @@
       }
     },
     created(){
+      console.log(sessionStorage.getItem('id'));
       this.fundList();
     },
     methods:{
@@ -297,7 +298,7 @@
       //分类
       fundList(){
         this.loadding = true;
-        this.$moneyGet('fund/select_fundName.po?fund_stale=0&level=1').then(res=>{
+        this.$moneyGet('fund/select_fundName.po?fund_stale=0&level=1&company_id='+sessionStorage.getItem('id')).then(res=>{
           if (res.status === 200){
             this.loadding = false;
             this.Radiocolumns = res.data.data;
@@ -331,6 +332,12 @@
         return `${y}-${m}-${d}`;
       },
       add(){
+		  if( this.handle.company_id==null){
+			  this.handle.company_id=sessionStorage.getItem('id')
+		  }
+		  if( this. entry.company_id==null){
+		  			  this. entry.company_id=sessionStorage.getItem('id')
+		  }
         //阶段付款
         let cevi = this.list_data
         //  判断阶段付款
@@ -461,7 +468,7 @@
             this.$toast.fail(res.data.data);
             this.loadding = false;
           })
-        }
+        } 
       },
     //  这里是打包的应收应付的接口，直接调用就行
       recivalble_add(data,data_data){

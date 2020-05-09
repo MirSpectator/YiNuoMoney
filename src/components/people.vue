@@ -1,6 +1,6 @@
 <template>
     <div class="people">
-        <van-field :label="peopleLabel" v-model="listRelevant" :placeholder="placePeople" @keyup="peopleKeyuo(listRelevant)"/>
+        <van-field :label="peopleLabel" v-model="listRelevant" :placeholder="placePeople" @input="myChange" @keyup="peopleKeyuo(listRelevant)"/>
         <ul class="bckShow" v-show="peopleShow">
             <li v-for="(item,i) in peopleArray" :key="i" @click="peopleClick(item.fund_person,item.fund_person_id)">{{item.fund_person}}</li>
         </ul>
@@ -25,6 +25,14 @@
       }
     },
     methods:{
+		//监听输入框的变化
+		myChange(){
+		if(this.listRelevant===""){
+					  this.$emit('change',this.listRelevant)
+		}else {
+					  this.$emit('change',this.listRelevant,this.listRelevant_id)
+		}		 
+		}	,
       peopleKeyuo(val){
         let then = this;
         if (val == ''){
@@ -46,6 +54,7 @@
         this.listRelevant = val;
         this.listRelevant_id = id;
         this.$emit('peopleList',val,id);
+		 this.$emit('change',this.site,id)
         this.peopleShow = false;
       },
       people_name(){

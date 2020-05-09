@@ -24,20 +24,20 @@
             <van-collapse v-model="activeNames">
                 <van-collapse-item title="查询" name="1">
 <!--                    起始时间、结束时间、类别选择、类别名称、工地名称-->
-                    <site_people labe="工地名称" @site_peoples="siteId" v-model="site" place="请输入工地名称"></site_people>
-                    <people peopleLabel="相关人" @peopleList="peopleID" v-model="listRelevant" placePeople="请输入相关人"></people>
+                    <site_people v-on:change="sitePeopleChange" labe="工地名称" @site_peoples="siteId" v-model="site" place="请输入工地名称"></site_people>
+                    <people v-on:change="peopleChange" peopleLabel="相关人" @peopleList="peopleID" v-model="listRelevant" placePeople="请输入相关人"></people>
                     <div class="select_option">
                         <label>户主</label>
                         <select v-model="bank_person" @change="search_person_api(bank_person)" :class="{garyList:bank_person === '',blackList:bank_person!==''}">
                             <option value="">请选择</option>
-                            <option v-for="(item,i) in fund_person" :key="i" :value="item.bank_person">{{item.bank_person}}</option>
+                            <option v-for="(item,i) in fund_person" :key="i" :value="item">{{item}}</option>
                         </select>
                     </div>
                     <div class="select_option">
                         <label>开户行</label>
                         <select v-model="bank_name" @change="search_bankName_api(bank_name)" :class="{garyList:bank_name === '',blackList:bank_name!==''}">
                             <option value="">请选择</option>
-                            <option v-for="(item,i) in fund_person" :key="i" :value="item.bank_name">{{item.bank_name}}</option>
+                            <option v-for="(item,i) in bank_names" :key="i" :value="item">{{item}}</option>
                         </select>
                     </div>
                     <div class="select_option">
@@ -48,14 +48,14 @@
                         <label>结束时间</label>
                         <el-date-picker v-model="endDate" @change="search_endDate_api" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择日期时间"></el-date-picker>
                     </div>
-                    <div class="select_option">
+                    <!-- <div class="select_option">
                         <label>类别选择</label>
                         <div>暂无</div>
                     </div>
                     <div class="select_option">
                         <label>类别名称</label>
                         <div>暂无</div>
-                    </div>
+                    </div> -->
                 </van-collapse-item>
             </van-collapse>
         </div>
@@ -108,6 +108,7 @@
     },
     data(){
       return {
+		bank_names:[],
         title: '现金流水',
         SearchValue: '',//关键字搜索
         activeNames: [],//下拉显示
@@ -154,13 +155,43 @@
           overflow: 'hidden',
           textOverflow: 'ellipsis'
         },
+		customer_id:null,
+		fund_person_id:null
       }
     },
     created(){
       //现金流水总数据
       this.getData();
+	  this.all_banks();
     },
     methods:{
+		sitePeopleChange(data,id){
+			this.customer_id=id
+			if(data==""&&this.fund_person_id!=undefined){
+				this.list_search_jsonfund['fund_person_id'] = this.fund_person_id;
+				this.list_search_jsonfund['customer_id'] = undefined;
+				 let json = {jsonBank:JSON.stringify(this.list_search_data),jsonFund:JSON.stringify(this.list_search_jsonfund)};
+				this.search_api(json);
+			}else if(data===""){
+				this.list_search_jsonfund['customer_id']=undefined
+				let json = {jsonBank:JSON.stringify(this.list_search_data),jsonFund:JSON.stringify(this.list_search_jsonfund)};
+				this.search_api(json);
+			}
+		},
+		peopleChange(data,id){
+			this.fund_person_id=id
+			if(data==""&&this.customer_id!=undefined){
+				this.list_search_jsonfund['fund_person_id'] = undefined;
+				this.list_search_jsonfund['customer_id'] = this.customer_id;
+				
+				 let json = {jsonBank:JSON.stringify(this.list_search_data),jsonFund:JSON.stringify(this.list_search_jsonfund)};
+				 this.search_api(json);
+			}else if(data===""){
+				this.list_search_jsonfund['fund_person_id']=undefined
+				let json = {jsonBank:JSON.stringify(this.list_search_data),jsonFund:JSON.stringify(this.list_search_jsonfund)};
+				this.search_api(json);
+			}
+		},
       //工地名称
       siteId(datas,id){
         this.site = datas;
@@ -498,7 +529,34 @@
             this.$toast.fail(res.data.data);
           }
         })
-      }
+      },
+	  all_banks(){
+	  	let that = this
+	    let data = JSON.parse(that.$store.state.all_bank_pd);
+	    let bankperson = [];
+		let bankName = [];
+		let s = null;
+		data.forEach((item,index)=>{
+			if(index==0){
+				s = item 
+			}
+			if(s.bank_person!=item.bank_person){
+				bankperson.push(s.bank_person)
+				if(index == data.length-1){
+					bankperson.push(item.bank_person)
+				}
+			}
+			if(s.bank_name!=item.bank_name){
+				bankName.push(s.bank_name)
+				if(index == data.length-1){
+					bankName.push(item.bank_name)
+				}
+			}
+			s = item 
+		})
+		that.bank_names = bankName
+	    that.fund_person = bankperson
+	  }
     },
     computed:{
       table_search(){
@@ -514,8 +572,9 @@
       },
       //获取银行卡数据
       all_bank(){
-        let data = JSON.parse(this.$store.state.all_bank_pd);
-        this.fund_person = data;
+		let that = this
+        let data = JSON.parse(that.$store.state.all_bank_pd);
+		return data
       }
     },
   }
