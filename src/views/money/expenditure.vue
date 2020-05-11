@@ -4,8 +4,12 @@
         <van-form @submit="expendonSubmit">
 <!--           下拉框-->
             <class_select @monitor="fund_monitor"></class_select>
-            <site_people labe="工地名称" @site_peoples="siteId" v-model="site" place="请输入工地名称"></site_people>
-            <people peopleLabel="收款人" @peopleList="peopleID" v-model="fund_person" placePeople="请输入收款人"></people>
+            <site_people v-on:change="sitePeopleChange" labe="工地名称" @site_peoples="siteId" v-model="site" place="请输入工地名称"></site_people>
+            <people v-on:change="peopleChange" peopleLabel="收款人" @peopleList="peopleID" v-model="fund_person" placePeople="请输入收款人"></people>
+			<van-field readonly clickable name="picker" v-if="reiceShow" :value="reice" label="应收款项" placeholder="点击应收款项" @click="reicePicker = true"/>
+			<van-popup v-model="reicePicker" position="bottom">
+			    <van-picker show-toolbar :columns="reicecolumns" @confirm="onConfirm" @cancel="reicePicker = false"/>
+			</van-popup>
             <time_data label="日期" v-model="dateTime"></time_data>
             <van-field v-model="bank_deal_money" name="金额" label="金额" placeholder="￥"/>
             <van-field v-model="clearBei" name="备注" label="备注" placeholder="请输入备注"/>
@@ -40,9 +44,42 @@
         checked: false,
         loadding:false,//加载动画
         money_bank_person:'',//转出账户
+		reiceShow:false,
+		reicecolumns:[],//应收款项
+		reicePicker:false,
+		 ceew:{},//应付款是否显示
+		  reice:'',//应收款项
+		 customer_id:null,
       }
     },
     methods:{
+		sitePeopleChange(data,id){
+			this.customer_id=id
+			if(data==""&&this.fund_person_id!=undefined){
+				this.ceew['fund_person_id'] = this.fund_person_id;
+				this.ceew['customer_id'] = undefined;
+				this.fund_ciew(JSON.stringify(this.ceew))
+			}else if(data===""){
+				this.ceew['customer_id']=undefined
+			    this.reiceShow=false
+			}
+		},
+		peopleChange(data,id){
+			this.fund_person_id=id
+			if(data==""&&this.customer_id!=undefined){
+				this.ceew['fund_person_id'] = undefined;
+				this.ceew['customer_id'] = this.customer_id;
+				this.fund_ciew(JSON.stringify(this.ceew))
+			}else if(data===""){
+				this.ceew['fund_person_id']=undefined
+				 this.reiceShow=false
+			}
+		},
+		onConfirm(val){
+				this.reicePicker=false
+				this.reice = val.text
+				this.fund_detail_id = val.fund_detail_id
+		},
       //下拉框获取最后的id
       fund_monitor(val){
         this.fund_detail_id = val;
@@ -50,11 +87,34 @@
       siteId(data,id){
         this.site = data;
         this.site_id = id;
+		this.ceew['customer_id'] = id;
+		this.fund_ciew(JSON.stringify(this.ceew))
       },
       peopleID(data,id){
         this.fund_person = data;
         this.fund_person_id = id;
+		this.ceew['fund_person_id'] = id;
+		this.fund_ciew(JSON.stringify(this.ceew))
       },
+	  //应付款项
+	  fund_ciew(val){
+	  		  let data  = {"jsonfund_detail":val}
+	    this.$addtitle('fund/select_beforehand_fund.po',data).then(res=>{
+	  		  if(res.status===200&&res.data.data!='暂无数据'){
+	  			  let list = [];
+	  			  res.data.data.forEach((item)=>{
+	  				  if(item.fund_detail_money<0){
+	  					  item['text']='￥'+item.fund_detail_money+"  |  "+item.fund_detail_date+"   |   "+item.fund_detail_text
+	  					  list.push(item)
+	  				  }
+	  			  })
+	  		  this.reicecolumns = list
+	  		  this.reiceShow = true
+	  		  }else{
+				  this.reiceShow = false
+			}
+	    })
+	  },
       expendonSubmit(){
         let check = true;
         if (this.detailed == ''){

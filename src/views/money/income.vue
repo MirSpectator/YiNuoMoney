@@ -4,8 +4,8 @@
         <van-form @submit="incomeSubmit">
             <!--           下拉框-->
             <class_select @monitor="fund_monitor"></class_select>
-            <site_people labe="工地名称" @site_peoples="siteId" v-model="site" place="请输入工地名称"></site_people>
-            <people peopleLabel="相关人" @peopleList="peopleID" v-model="listRelevant" placePeople="请输入相关人"></people>
+            <site_people v-on:change="sitePeopleChange" labe="工地名称" @site_peoples="siteId" v-model="site" place="请输入工地名称"></site_people>
+            <people v-on:change="peopleChange" peopleLabel="相关人" @peopleList="peopleID" v-model="listRelevant" placePeople="请输入相关人"></people>
             <van-field readonly clickable name="picker" v-if="reiceShow" :value="reice" label="应收款项" placeholder="点击应收款项" @click="reicePicker = true"/>
             <van-popup v-model="reicePicker" position="bottom">
                 <van-picker show-toolbar :columns="reicecolumns" @confirm="onConfirm" @cancel="reicePicker = false"/>
@@ -55,7 +55,7 @@
         money_bank_person:'',//转出账户
         money_get:'',//实际转账如果修改就传这个
         ceew:{},//应收付款是否显示
-		fund_detail_id:null,//销账需要使用的
+		customer_id:null,
       }
     },
     created() {
@@ -63,7 +63,28 @@
       this.dateTime = this.$time(new Date())
     },
     methods:{
-
+sitePeopleChange(data,id){
+			this.customer_id=id
+			if(data==""&&this.fund_person_id!=undefined){
+				this.ceew['fund_person_id'] = this.fund_person_id;
+				this.ceew['customer_id'] = undefined;
+				this.fund_ciew(JSON.stringify(this.ceew))
+			}else if(data===""){
+				this.ceew['customer_id']=undefined
+			    this.reiceShow=false
+			}
+		},
+		peopleChange(data,id){
+			this.fund_person_id=id
+			if(data==""&&this.customer_id!=undefined){
+				this.ceew['fund_person_id'] = undefined;
+				this.ceew['customer_id'] = this.customer_id;
+				this.fund_ciew(JSON.stringify(this.ceew))
+			}else if(data===""){
+				this.ceew['fund_person_id']=undefined
+				 this.reiceShow=false
+			}
+		},
       //应收款项
       onConfirm(val){
         console.log(val)
@@ -165,7 +186,9 @@
 			  })
 		  this.reicecolumns = list
 		  this.reiceShow = true
-		  }
+		  }else{
+				  this.reiceShow = false
+			}
         })
       },
       //银行卡获取

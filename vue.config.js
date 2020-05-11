@@ -1,6 +1,6 @@
 module.exports = {
   publicPath: './',
-  outputDir: 'YiNuoFind',
+  outputDir: 'YiNuoMoney',
   lintOnSave: true,
   productionSourceMap: false,
   runtimeCompiler: true,

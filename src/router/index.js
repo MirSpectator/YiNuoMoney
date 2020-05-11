@@ -16,6 +16,7 @@ const routes = [
   {path:'/site_people', name:'site_people', component: resolve=>require(['@/components/site_people'],resolve)},
   {path:'/transfer', name:'transfer', component: resolve=>require(['@/views/money/transfer'],resolve)},
   {path:'/home/running_money/flowing_details/:id', name:'flowing_details', component: resolve=>require(['@/views/money/flowing_details'],resolve)},
+  {path:'/home/running_money/dowad', name:'dowad', component: resolve=>require(['@/views/money/dowod'],resolve)},
   {path:'/home/running_money/flowing_details/runing_details_updata/:id', name:'runing_details_updata', component: resolve=>require(['@/views/money/runing_details_updata'],resolve)},
   {path:'/home/receivable_money', name:'receivable_money', component: resolve=>require(['@/views/receivable/receivable_money'],resolve)},
   {path:'/home/receivable_money/Receivablepayable_entry', name:'Receivablepayable_entry', component: resolve=>require(['@/views/receivable/Receivablepayable_entry'],resolve)},

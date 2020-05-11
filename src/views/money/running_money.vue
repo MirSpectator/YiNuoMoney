@@ -430,7 +430,8 @@
       },
       //下载账单
       linkHref(){
-        let data ={};
+		 this.$router.push('/home/running_money/dowad')
+       /* let data ={};
         let data_s = {startDate:this.GetDateStr(-3)}
         // let data_s = {startDate:'2020-01-01 00:00:00',company_id: 28}
         let data_json = {jsonFund:JSON.stringify(data_s),jsonBank:JSON.stringify(data)}
@@ -440,7 +441,7 @@
           }else{
             this.$toast('数据异常');
           }
-        })
+        })*/
       },
       // 封装前两天时间
       GetDateStr (AddDayCount) {
@@ -453,7 +454,7 @@
         var mm = dd.getMinutes() < 10 ? '0' + dd.getMinutes() : dd.getMinutes();
         var s = dd.getSeconds() < 10 ? '0' + dd.getSeconds() : dd.getSeconds();
         // return y + '-' + m + '-' + d;
-        return `${y}-${m}-${d} ${h}:${mm}:${s}`;
+        return `${y}-${m}-${d} ${h}:${mm}:${s}`; 
       },
       //流水数据
       getData(){
